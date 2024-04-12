@@ -1,23 +1,25 @@
 local lib = require 'nucleo.lib'
 local sorters = require 'telescope.sorters'
 
+local matcher = lib.create_matcher()
+
 local function create_sorter()
     return sorters.Sorter:new {
+        start = function (_, prompt)
+            matcher:set_pattern(vim.trim(prompt))
+        end,
         discard = true,
-        scoring_function = function(_, prompt, line)
-            local score = lib.match(vim.trim(prompt), line).score
+        scoring_function = function(_, _, line)
+            local score = matcher:match(line)
             if score == 0 then return -1 end
             return 1 / score
         end,
-        highlighter = function(_, prompt, display)
-            local hls = lib.match(prompt, display:sub(3), 3).hls
-            return hls
+        highlighter = function(_, _, display)
+            local _,hlcols = matcher:match(display)
+            return hlcols
         end,
     }
 end
-vim.schedule(function()
-    require('telescope').load_extension('nucleo')
-end)
 return require 'telescope'.register_extension {
     setup = function(_, conf)
         conf.file_sorter = create_sorter

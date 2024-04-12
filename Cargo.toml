@@ -8,3 +8,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 nucleo-matcher = "0.3.1"
+mlua = { version = "0.9.7", features = ["luajit", "module"] }
