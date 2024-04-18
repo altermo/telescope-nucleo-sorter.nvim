@@ -5,7 +5,7 @@ local matcher = lib.create_matcher()
 
 local function create_sorter()
     return sorters.Sorter:new {
-        start = function (_, prompt)
+        start = function(_, prompt)
             matcher:set_pattern(vim.trim(prompt))
         end,
         discard = true,
@@ -15,7 +15,7 @@ local function create_sorter()
             return 1 / score
         end,
         highlighter = function(_, _, display)
-            local _,hlcols = matcher:match(display)
+            local _, hlcols = matcher:match(display)
             return hlcols
         end,
     }
